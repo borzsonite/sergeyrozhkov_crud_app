@@ -1,7 +1,10 @@
 package com.sergeyrozhkov.crud.app.cotrollers;
 
+import com.sergeyrozhkov.crud.app.dao.PersonDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -9,15 +12,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/people")
 public class PeopleController {
 
-    @RequestMapping()
-    public String index(Model model) {
+    @Autowired
+    private PersonDAO personDAO;
 
-        return null;
+    @GetMapping()
+    public String index(Model model) {
+        model.addAttribute("people",personDAO.index());
+        return "people/index" ;
     }
 
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model) {
-
-        return null;
+        model.addAttribute("person", personDAO.show(id));
+        return "people/show";
     }
 }
