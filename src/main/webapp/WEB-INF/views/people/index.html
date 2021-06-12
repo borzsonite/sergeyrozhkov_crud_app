@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<div th:each="person : ${people}">
+<div th:each="person : ${people}"> <!--обход коллекции переданной из контролера через аттрибут -->
     <a th:href="@{/people/{id}(id=${person.getId()})}" th:text="${person.getName()}"></a>
 </div>
 </body>
