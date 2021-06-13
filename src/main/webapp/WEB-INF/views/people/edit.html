@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update person</title>
+</head>
+<body>
+<form th:method="PATCH" th:action="@{/people/{id}(id=${person.getId()})}" th:object="${person}">
+    <!--    в представлении создается форма, которая получает из контролера объект th:object="${person}"
+    после изменения которого форма, отправляется по адресу /people/id (методом PATCH)-->
+
+    <label for="name">Edit person</label>
+    <input type="text" th:field="*{name}" id="name"/>
+    <!--    в поле подставляется значение из объекта th:object="${person}" переданного из контролера
+    этот объект изменяется в форме и отправляется по вышеуказанному адресу "@{/people/{id}(id=${person.getId()})}"-->
+
+
+    <input type="submit" value="Edit!">
+
+</form>
+</body>
+</html>
