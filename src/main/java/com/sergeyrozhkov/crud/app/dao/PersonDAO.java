@@ -35,7 +35,7 @@ public class PersonDAO {
         try {
             Statement statement = connection.createStatement();
             String query = "SELECT * FROM person";
-            ResultSet resultSet =  statement.executeQuery(query);
+            ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
                 Person person = new Person();
@@ -56,6 +56,14 @@ public class PersonDAO {
     }
 
     public Person show(int id) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT FROM Person WHERE id=?");
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeQuery();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
 //        return people.stream().filter(person -> person.getId() == id)
 //                .findAny().orElse(null);
         return null;
@@ -63,11 +71,19 @@ public class PersonDAO {
 
     public void save(Person person) {
         try {
-            Statement statement = connection.createStatement();
-            String query = "INSERT INTO Person VALUES(" + 1 + ",'" + person.getName() +
-                    "'," + person.getAge() + ",'" + person.getEmail() + "')";;
-                    // получаем строку запрса: INSERT INTO Person VALUES(1, 'Tom','30','tom@mail.com')
-            statement.executeUpdate(query);
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Person VALUES (1, ?,?,?)");
+            preparedStatement.setString(1, person.getName());
+            preparedStatement.setInt(2, person.getAge());
+            preparedStatement.setString(3, person.getName());
+            preparedStatement.executeUpdate();
+
+            ///////////////////Обычный statement заменент кодом выше///////////////////////
+
+//            Statement statement = connection.createStatement();
+//            String query = "INSERT INTO Person VALUES(" + 1 + ",'" + person.getName() +
+//                    "'," + person.getAge() + ",'" + person.getEmail() + "')";;
+//                    // получаем строку запрса: INSERT INTO Person VALUES(1, 'Tom','30','tom@mail.com')
+//            statement.executeUpdate(query);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
