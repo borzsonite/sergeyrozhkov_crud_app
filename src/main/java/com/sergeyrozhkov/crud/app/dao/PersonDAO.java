@@ -3,34 +3,77 @@ package com.sergeyrozhkov.crud.app.dao;
 import com.sergeyrozhkov.crud.app.entity.Person;
 import org.springframework.stereotype.Component;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class PersonDAO {
     private static int PEOPLE_COUNT;
-    private List<Person> people;
+    private static final String URL = "jdbc:mysql://localhost:3306/my_db";
+    private static final String USERNAME = "bestuser";
+    private static final String PASSWORD = "bestuser";
+    private static Connection connection;
 
-    {
-        people = new ArrayList<>();
-        people.add(new Person(++PEOPLE_COUNT, "Tom", 30, "tom@mail.com"));
-        people.add(new Person(++PEOPLE_COUNT, "Mike", 34, "mike@mail.com"));
-        people.add(new Person(++PEOPLE_COUNT, "Jhon", 23, "jhon@mail.com"));
-        people.add(new Person(++PEOPLE_COUNT, "Mary", 21, "mari@mail.ru"));
+    static {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
+
     public List<Person> index() {
+        List<Person> people = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            String query = "SELECT * FROM person";
+            ResultSet resultSet =  statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                Person person = new Person();
+                person.setId(resultSet.getInt("id"));
+                person.setName(resultSet.getString("name"));
+                person.setAge(resultSet.getInt("age"));
+                person.setEmail(resultSet.getString("email"));
+
+                people.add(person);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+
         return people;
     }
 
     public Person show(int id) {
-        return people.stream().filter(person -> person.getId() == id)
-                .findAny().orElse(null);
+//        return people.stream().filter(person -> person.getId() == id)
+//                .findAny().orElse(null);
+        return null;
     }
 
     public void save(Person person) {
-        person.setId(++PEOPLE_COUNT);
-        people.add(person);
+        try {
+            Statement statement = connection.createStatement();
+            String query = "INSERT INTO Person VALUES(" + 1 + ",'" + person.getName() +
+                    "'," + person.getAge() + ",'" + person.getEmail() + "')";;
+                    // получаем строку запрса: INSERT INTO Person VALUES(1, 'Tom','30','tom@mail.com')
+            statement.executeUpdate(query);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+//        person.setId(++PEOPLE_COUNT);
+//        people.add(person);
     }
 
     public void update(int id, Person updatedPerson) {
@@ -43,6 +86,6 @@ public class PersonDAO {
 
 
     public void delete(int id) {
-        people.removeIf(person -> person.getId() == id);
+//        people.removeIf(person -> person.getId() == id);
     }
 }
