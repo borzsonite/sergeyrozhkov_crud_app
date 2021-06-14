@@ -5,7 +5,10 @@ import com.sergeyrozhkov.crud.app.entity.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/people")
@@ -40,7 +43,10 @@ public class PeopleController {
     }
 
     @PostMapping()
-    public String create(@ModelAttribute("person") Person person) { // 4. в person получаем объект из формы
+    public String create(@ModelAttribute("person")  @Valid Person person, BindingResult bindingResult) { // 4. в person получаем объект из формы
+        if(bindingResult.hasErrors()) {
+            return "people/new";
+        }
         personDAO.save(person); // 5. и сохраняем его в базу
         return "redirect:/people";
     }
@@ -53,8 +59,11 @@ public class PeopleController {
     }
 
     @PatchMapping("/{id}")
-    public String update(@ModelAttribute("person") Person person, @PathVariable("id") int id) { // 5. получаем объект из формы
+    public String update(@ModelAttribute("person") @Valid Person person, BindingResult bindingResult , @PathVariable("id") int id) { // 5. получаем объект из формы
 
+        if(bindingResult.hasErrors()) {
+            return "people/edit";
+        }
         personDAO.update(id, person); //6. и сохраняем его в базу
         return "redirect:/people";
     }
