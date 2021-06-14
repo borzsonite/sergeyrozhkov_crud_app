@@ -14,6 +14,12 @@
     <!--    в поле подставляется значение из объекта th:object="${person}" переданного из контролера
     этот объект изменяется в форме и отправляется по вышеуказанному адресу "@{/people/{id}(id=${person.getId()})}"-->
 
+    <br>
+    <label for="age">Edit age</label>
+    <input type="text" th:field="*{age}" id="age"/>
+    <br>
+    <label for="email">Edit email</label>
+    <input type="text" th:field="*{email}" id="email"/>
 
     <input type="submit" value="Edit!">
 
